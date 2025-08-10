@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Submission Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen py-8 px-4">
+    <div class="max-w-md mx-auto">
+        <div class="bg-white rounded-lg shadow-md p-8">
+            <h1 class="text-2xl font-semibold text-gray-800 text-center mb-8">Submit Your Resume</h1>
+            
+            <!-- Success Alert -->
+            <div id="successAlert" class="hidden mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-green-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-green-700 text-sm font-medium">Resume submitted successfully!</span>
+                </div>
+            </div>
+
+            <form id="resumeForm" class="space-y-6">
+                <!-- Full Name -->
+                <div>
+                    <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name <span class="text-red-500">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        name="fullName" 
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Enter your full name"
+                    >
+                </div>
+
+                <!-- Phone Number -->
+                <div>
+                    <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-2">
+                        Phone Number <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                            <span class="text-gray-500 font-medium">+91</span>
+                        </div>
+                        <input 
+                            type="tel" 
+                            id="phoneNumber" 
+                            name="phoneNumber" 
+                            required
+                            pattern="[0-9]{10}"
+                            maxlength="10"
+                            class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="9876543210"
+                        >
+                    </div>
+                    <div id="phoneError" class="hidden mt-1 text-sm text-red-600">
+                        Please enter a valid 10-digit phone number
+                    </div>
+                </div>
+
+                <!-- Resume Upload -->
+                <div>
+                    <label for="resumeFile" class="block text-sm font-medium text-gray-700 mb-2">
+                        Resume Upload <span class="text-red-500">*</span>
+                    </label>
+                    <input 
+                        type="file" 
+                        id="resumeFile" 
+                        name="resumeFile" 
+                        required
+                        accept=".pdf,.doc,.docx"
+                        class="hidden"
+                    >
+                    <label 
+                        for="resumeFile" 
+                        class="flex items-center justify-center w-full px-4 py-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 hover:bg-gray-50"
+                    >
+                        <div class="text-center">
+                            <svg class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <span class="text-sm text-gray-600">Click to upload or drag and drop</span>
+                            <p class="text-xs text-gray-500 mt-1">PDF, DOC, DOCX (Max 10MB)</p>
+                        </div>
+                    </label>
+                    <div id="fileName" class="hidden mt-2 text-sm text-gray-600 flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span id="fileNameText"></span>
+                    </div>
+                </div>
+
+                <!-- Hidden Job ID -->
+                <input type="hidden" id="jobId" name="jobId" value="JOB-102">
+                
+                <!-- Submit -->
+                <button 
+                    type="submit" 
+                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                    Submit Resume
+                </button>
+            </form>
+        </div>
+        <div class="text-center mt-6 text-sm text-gray-500">
+            Fill out all required fields to submit your resume
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('resumeForm');
+        const phoneInput = document.getElementById('phoneNumber');
+        const phoneError = document.getElementById('phoneError');
+        const fileInput = document.getElementById('resumeFile');
+        const fileName = document.getElementById('fileName');
+        const fileNameText = document.getElementById('fileNameText');
+        const successAlert = document.getElementById('successAlert');
+        const jobIdField = document.getElementById('jobId');
+
+        // Auto get Job ID from URL if present
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobIdParam = urlParams.get('job_id');
+        if (jobIdParam) {
+            jobIdField.value = jobIdParam;
+        }
+
+        // Phone validation
+        phoneInput.addEventListener('input', function() {
+            const value = this.value.replace(/\D/g, '');
+            this.value = value.slice(0, 10);
+            if (value.length === 10) {
+                phoneError.classList.add('hidden');
+            } else if (value.length > 0) {
+                phoneError.classList.remove('hidden');
+            } else {
+                phoneError.classList.add('hidden');
+            }
+        });
+
+        // File handling
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const file = this.files[0];
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File must be under 10MB');
+                    this.value = '';
+                    fileName.classList.add('hidden');
+                    return;
+                }
+                fileNameText.textContent = file.name;
+                fileName.classList.remove('hidden');
+            } else {
+                fileName.classList.add('hidden');
+            }
+        });
+
+        // Submit
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const phoneValue = phoneInput.value.replace(/\D/g, '');
+            if (phoneValue.length !== 10) {
+                phoneError.classList.remove('hidden');
+                return;
+            }
+            successAlert.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const formData = new FormData(this);
+            formData.set('phoneNumber', '+91' + phoneValue);
+            formData.set('jobId', jobIdField.value);
+
+            fetch('http://localhost:5678/webhook-test/resume-upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => console.log('Success:', data))
+            .catch(err => console.error('Error:', err));
+
+            setTimeout(() => {
+                form.reset();
+                fileName.classList.add('hidden');
+                successAlert.classList.add('hidden');
+            }, 3000);
+        });
+
+        phoneInput.addEventListener('keypress', function(e) {
+            if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter'].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
